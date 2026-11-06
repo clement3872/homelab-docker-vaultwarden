@@ -16,5 +16,5 @@ echo "Plaintext admin token (store in the vault once it exists):"
 openssl rand -base64 48 | tr -d '\n'; echo
 echo
 echo "Next: hash it with"
-echo "  docker run --rm -it vaultwarden/server:1.37.0 /vaultwarden hash --preset owasp"
+echo "  docker run --rm -it vaultwarden/server:1.37.5 /vaultwarden hash --preset owasp"
 echo "then put the \$argon2id\$... string in .env, SINGLE-QUOTED."
