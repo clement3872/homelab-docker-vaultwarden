@@ -1,0 +1,22 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:${VAULTWARDEN_TAG:?VAULTWARDEN_TAG required}
+    restart: unless-stopped
+    # env_file, not `environment:` — Compose does not interpolate env_file
+    # values, so the argon2 ADMIN_TOKEN passes through literally.
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+    ports:
+      - "127.0.0.1:${VAULTWARDEN_PORT:?VAULTWARDEN_PORT required}:80"
+    # Resolve Authentik on the host directly; without this the OIDC calls
+    # hairpin out to the VPS and back.
+    extra_hosts:
+      - "${AUTH_HOST:?AUTH_HOST required}:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/alive || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
